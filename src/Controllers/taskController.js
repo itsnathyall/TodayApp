@@ -1,21 +1,29 @@
-import Task from ('./src/Models/tasksModel');
+import { Tasks } from "../Models/tasksModel.js";
+import mongoose from "mongoose";
 
-
-exports.createTask = async (req,res) =>{
+export const createTask = async (req, res) => {
     try {
-        const task = new Task({...req.body, user: req.user.id});
+        const userId = req.user ? req.user.id : new mongoose.Types.ObjectId();
+        const taskData = {
+            ...req.body,
+            user: userId,
+            estimatedTime: req.body.estimatedTime || "defaultEstimatedTime",
+            task: req.body.task || "defaultTask"
+        };
+        const task = new Tasks(taskData);
         await task.save();
         res.status(201).json(task);
-    } catch(err){
-        res.status(500).json({error: err.msg});
-    };
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-exports.getTasks = async(req,res) => {
+export const getTasks = async (req, res) => {
     try {
-        const tasks = await Task.find({user: req.user.id});
+        const userId = req.user ? req.user.id : new mongoose.Types.ObjectId();
+        const tasks = await Tasks.find({ user: userId });
         res.json(tasks);
-    }catch(err){
-        res.status(500).json({error: err.msg})
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-}
+};

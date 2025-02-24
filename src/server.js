@@ -1,29 +1,16 @@
-import express from 'express';
-const app = express();
+import express from "express";
+import dotenv from "dotenv";
+import db from "./config/db.js";
+import taskRoutes from "./Routes/routes.js";
 
-import dotenv from 'dotenv'
+
 dotenv.config();
-
-
-//Connecting to the DB(duh)
-import db from './config/db.js'
 db.connectToDb();
 
+const app = express();
+app.use(express.json());
 
+app.use("/task", taskRoutes);
 
-
-
-//Router
-// app.use(express.json());
-
-// const authRoute = require('./Routes/auth.js')
-// app.use('/auth', authRoute,)
-
-// const taskRoute = require('./Routes/task.js')
-// app.use('/auth', taskRoute)
-
-// Start Server
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
-});
-
+const PORT = process.env.PORT || 4999;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
