@@ -9,4 +9,4 @@ const taskSchema = new mongoose.Schema({
     items: [{name: { type: String, required: true },completed: { type: Boolean, default: false }}]
 });
 
-export const Task = mongoose.model("Tasks")
+export const Tasks = mongoose.model("Task", taskSchema);
