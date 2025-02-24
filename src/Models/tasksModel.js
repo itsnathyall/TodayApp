@@ -1,12 +1,18 @@
-import {mongoose} from "mongoose";
+import mongoose from "mongoose";
 
-const taskSchema = new mongoose.Schema({
-    task: { type: String, required: true, unique: true },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    addedAt: { type: Date, default: Date.now },
-    isDone: { type: Boolean, default: false },
-    estimatedTime: { type: Number, required: true },
-    items: [{name: { type: String, required: true },completed: { type: Boolean, default: false }}]
+const TaskSchema = new mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    task: { type: String, required: true },
+    estimatedTime: { type: String, default: "Not specified" },
+    status: { type: String, enum: ["pending", "completed"], default: "pending" },
+    isList: { type: Boolean, default: false },
+    listItems: [{ name: String, completed: Boolean }],
+    order: { type: Number, default: 0 },
+    createdAt: { type: Date, default: Date.now },
+    completedAt: { type: Date }
 });
 
-export const Tasks = mongoose.model("Task", taskSchema);
+
+TaskSchema.index({ completedAt: 1 }, { expireAfterSeconds: 604800 });
+
+export const Tasks = mongoose.model("Tasks", TaskSchema);

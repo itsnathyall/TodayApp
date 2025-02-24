@@ -10,7 +10,7 @@ db.connectToDb();
 const app = express();
 app.use(express.json());
 
-app.use("/task", taskRoutes);
+app.use("/", taskRoutes);
 
 const PORT = process.env.PORT || 4999;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
