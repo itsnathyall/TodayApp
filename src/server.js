@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import db from "./config/db.js";
 import taskRoutes from "./Routes/routes.js";
+import authRoutes from "./Routes/routes.js";
 
 
 dotenv.config();
@@ -11,6 +12,7 @@ const app = express();
 app.use(express.json());
 
 app.use("/", taskRoutes);
+app.use("/auth", authRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is working');
