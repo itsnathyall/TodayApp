@@ -12,6 +12,7 @@ router.get("/profile", protect, getUserProfile);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 
+//routes for tasks
 router.post("/tasks", createTask);
 router.get("/tasks", getTasks);
 router.delete("/tasks/:id", deleteTask);
