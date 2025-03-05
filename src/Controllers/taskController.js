@@ -6,32 +6,40 @@ import { Tasks } from "../Models/tasksModel.js";
 //addd new tasks
 export const createTask = async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({ 
-                error: "Unauthorized: req.user is undefined",
-                debug: "Make sure auth middleware is working"
-            });
-        }
-
-        const userId = req.user._id;
+        const userId = req.user?._id;
         if (!userId) {
-            return res.status(401).json({ 
-                error: "Unauthorized: User ID not found",
-                debug: req.user // This will return the user object in response
-            });
+            return res.status(401).json({ error: "Unauthorized: User ID not found" });
         }
 
-        res.status(200).json({ message: "Authentication successful", user: req.user });
+        const { task, estimatedTime, isList, listItems } = req.body;
+
+        if (!task) {
+            return res.status(400).json({ error: "Task name is required" });
+        }
+
+        const lastTask = await Tasks.findOne({ user: userId }).sort("-order");
+        const newOrder = lastTask ? lastTask.order + 1 : 0;
+
+        const newTask = new Tasks({
+            user: userId,
+            task,
+            estimatedTime,
+            isList: isList || false,
+            listItems: isList ? listItems || [] : [],
+            order: newOrder
+        });
+
+        await newTask.save();
+        res.status(201).json(newTask);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
-
 //Get all the task of speicfif user
 export const getTasks = async (req, res) => {
     try {
-        const userId = req.user?._id;
+        const userId = req.user?.id;
         const tasks = await Tasks.find({ user: userId }).sort("order");
         res.status(200).json(tasks);
     } catch (err) {
