@@ -8,7 +8,6 @@ import { Tasks } from "../Models/tasksModel.js";
 export const createTask = async (req, res) => {
     try {
         const userId = req.user?.id;
-        const userId = mockUserId;
         if (!userId) {
             return res.status(401).json({ error: "Unauthorized: User ID not found" });
         }
@@ -42,7 +41,6 @@ export const createTask = async (req, res) => {
 export const getTasks = async (req, res) => {
     try {
         const userId = req.user?.id;
-        const userId = mockUserId; 
         const tasks = await Tasks.find({ user: userId }).sort("order");
         res.status(200).json(tasks);
     } catch (err) {
