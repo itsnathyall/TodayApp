@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const protect = async (req, res, next) => {
-  console.log("Headers Received:", req.headers);
+  console.log("JWT_SECRET in protect:", process.env.JWT_SECRET); // 🔥 Debug log
 
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
@@ -17,10 +17,10 @@ export const protect = async (req, res, next) => {
           console.log("Decoded Token:", decoded);
 
           req.user = await User.findById(decoded.id).select("-password");
-          console.log("User Found:", req.user);
+          console.log("User Found in DB:", req.user);
 
           if (!req.user) {
-              return res.status(401).json({ message: "User not found in database" });
+              return res.status(401).json({ message: "User not found in database", userId: decoded.id });
           }
 
           next();
@@ -32,3 +32,4 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ message: "Not authorized, no token provided" });
   }
 };
+
