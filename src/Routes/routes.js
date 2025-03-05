@@ -1,5 +1,5 @@
 import express from "express";
-import { createTask, getTasks, deleteTask, updateTask, markTaskAsCompleted, reorderTasks } from "../Controllers/taskController.js";
+import { createTask, getTasks, deleteTask, updateTask, markTaskAsCompleted } from "../Controllers/taskController.js";
 import { registerUser, loginUser, getUserProfile, forgotPassword, resetPassword } from "../Controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -18,5 +18,4 @@ router.get("/tasks", getTasks);
 router.delete("/tasks/:id", deleteTask);
 router.put("/tasks/:id", updateTask);
 router.put("/tasks/:taskId/complete", markTaskAsCompleted);
-router.put("/tasks/:userId/order", reorderTasks);
 export default router;
