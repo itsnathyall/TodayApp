@@ -13,9 +13,9 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 
 //routes for tasks
-router.post("/tasks", createTask);
-router.get("/tasks", getTasks);
-router.delete("/tasks/:id", deleteTask);
-router.put("/tasks/:id", updateTask);
-router.put("/tasks/:taskId/complete", markTaskAsCompleted);
+router.post("/tasks", protect, createTask);
+router.get("/tasks", protect, getTasks);
+router.delete("/tasks/:id", protect, deleteTask);
+router.put("/tasks/:id", protect, updateTask);
+router.put("/tasks/:taskId/complete", protect, markTaskAsCompleted);
 export default router;
