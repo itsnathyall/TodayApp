@@ -25,5 +25,5 @@ app.get('/', (req, res) => {
     res.send('API is working');
 });
 
-const PORT = 4999;
-app.listen(PORT, () => console.log(`Server running on port 4999`));
+const PORT = process.env.PORT || 4999;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
