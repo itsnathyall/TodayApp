@@ -1,55 +1,40 @@
 import { Tasks } from "../Models/tasksModel.js";
-import Tasks from "../Models/taskModel.js"; // Make sure this path is correct
 
 
 
 
 //addd new tasks
-
-
-
 export const createTask = async (req, res) => {
-  try {
+    try {
+        const userId = req.user?.id;
+        if (!userId) {
+            return res.status(401).json({ error: "Unauthorized: User ID not found" });
+        }
 
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized: User ID not found in request" });
+        const { task, estimatedTime, isList, listItems } = req.body;
+
+        if (!task) {
+            return res.status(400).json({ error: "Task name is required" });
+        }
+
+        const lastTask = await Tasks.findOne({ user: userId }).sort("-order");
+        const newOrder = lastTask ? lastTask.order + 1 : 0;
+
+        const newTask = new Tasks({
+            user: userId,
+            task,
+            estimatedTime,
+            isList: isList || false,
+            listItems: isList ? listItems || [] : [],
+            order: newOrder
+        });
+
+        await newTask.save();
+        res.status(201).json(newTask);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-
-    const userId = req.user._id;
-    console.log("Creating task for User ID:", userId);
-
-    const { task, estimatedTime, isList, listItems } = req.body;
-
-
-    if (!task) {
-      return res.status(400).json({ error: "Task name is required" });
-    }
-
-
-    const lastTask = await Tasks.findOne({ user: userId }).sort("-order");
-    const newOrder = lastTask ? lastTask.order + 1 : 0;
-
-
-    const newTask = new Tasks({
-      user: userId,
-      task,
-      estimatedTime,
-      isList: isList || false,
-      listItems: isList ? listItems || [] : [],
-      order: newOrder
-    });
-
-    await newTask.save();
-    console.log("Task Created:", newTask);
-
-    res.status(201).json(newTask);
-  } catch (err) {
-    console.error("Task Creation Error:", err.message);
-    res.status(500).json({ error: err.message });
-  }
 };
-
-
 
 //Get all the task of speicfif user
 export const getTasks = async (req, res) => {
