@@ -1,16 +1,12 @@
 import { Tasks } from "../Models/tasksModel.js";
 
 
-//mock user id till we get the user authentication
-const mockUserId = "65fabc1234abcd5678ef9012"
-
 
 
 //addd new tasks
 export const createTask = async (req, res) => {
     try {
-        //const userId = req.user?.id;
-        const userId = mockUserId;
+        const userId = req.user?.id;
         if (!userId) {
             return res.status(401).json({ error: "Unauthorized: User ID not found" });
         }
@@ -43,8 +39,7 @@ export const createTask = async (req, res) => {
 //Get all the task of speicfif user
 export const getTasks = async (req, res) => {
     try {
-        //const userId = req.user?.id;
-        const userId = mockUserId; 
+        const userId = req.user?.id;
         const tasks = await Tasks.find({ user: userId }).sort("order");
         res.status(200).json(tasks);
     } catch (err) {
@@ -52,31 +47,6 @@ export const getTasks = async (req, res) => {
     }
 };
 
-//can reorder tasks by dragging them (doesn't work yet, gotta work on it)
-export const reorderTasks = async (req, res) => {
-    try {
-        //const userId = req.user?.id;
-        const userId = mockUserId;
-        if (!userId) {
-            return res.status(401).json({ error: "Unauthorized: User ID not found" });
-        }
-
-        const { taskId, newOrder } = req.body;
-        if (!taskId || newOrder === undefined) {
-            return res.status(400).json({ error: "taskId and newOrder are required" });
-        }
-
-        const task = await Tasks.findOne({ _id: taskId, user: userId });
-        if (!task) return res.status(404).json({ error: "Task not found" });
-
-        task.order = newOrder;
-        await task.save();
-
-        res.status(200).json(task);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
 
 
 //mark tasks as completed

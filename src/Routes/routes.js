@@ -1,5 +1,5 @@
 import express from "express";
-import { createTask, getTasks, deleteTask, updateTask, markTaskAsCompleted, reorderTasks } from "../Controllers/taskController.js";
+import { createTask, getTasks, deleteTask, updateTask, markTaskAsCompleted } from "../Controllers/taskController.js";
 import { registerUser, loginUser, getUserProfile, forgotPassword, resetPassword } from "../Controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -13,10 +13,9 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 
 //routes for tasks
-router.post("/tasks", createTask);
-router.get("/tasks", getTasks);
-router.delete("/tasks/:id", deleteTask);
-router.put("/tasks/:id", updateTask);
-router.put("/tasks/:taskId/complete", markTaskAsCompleted);
-router.put("/tasks/:userId/order", reorderTasks);
+router.post("/tasks", protect, createTask);
+router.get("/tasks", protect, getTasks);
+router.delete("/tasks/:id", protect, deleteTask);
+router.put("/tasks/:id", protect, updateTask);
+router.put("/tasks/:taskId/complete", protect, markTaskAsCompleted);
 export default router;
