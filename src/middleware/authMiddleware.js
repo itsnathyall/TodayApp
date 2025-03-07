@@ -8,7 +8,7 @@ export const protect = async (req, res, next) => {
   try {
     console.log("Checking JWT_SECRET:", process.env.JWT_SECRET);
 
-    const authHeader = req.headers["authorization"];
+    const authHeader = req.headers["Authorization"];
     const token = authHeader && authHeader.split(" ")[1];
     console.log("Extracted Token:", token);
 
