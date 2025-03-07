@@ -6,6 +6,13 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
+
+  refreshTokens: [
+    {
+      token: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now }
+    }
+  ]
 }, { timestamps: true });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);
