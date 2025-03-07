@@ -5,28 +5,34 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const protect = async (req, res, next) => {
-  console.log("JWT_SECRET in protect:", process.env.JWT_SECRET);
-
   try {
+    console.log("🔐 Checking JWT_SECRET:", process.env.JWT_SECRET);
 
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
     console.log("Extracted Token:", token);
 
     if (!token || token === "undefined" || token === "null") {
-      return res.status(401).json({ type: "verify token", message: "Token not found" });
+      return res.status(401).json({ message: "Token not found" });
     }
 
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded Token:", decoded); 
+    console.log("✅ Decoded Token:", decoded);
 
 
-    req.user = await User.findById(decoded.id).select("-password");
-    console.log("User Found in DB:", req.user);
+    const userId = decoded._id || decoded.id;
+    console.log("User ID Extracted from Token:", userId);
+
+    if (!userId) {
+      return res.status(401).json({ message: "Invalid token: User ID missing" });
+    }
+
+    req.user = await User.findById(userId).select("-password");
+    console.log("Found User in DB:", req.user);
 
     if (!req.user) {
-      return res.status(401).json({ message: "User not found in database", userId: decoded.id });
+      return res.status(401).json({ message: "User not found in database", userId });
     }
 
     next();
