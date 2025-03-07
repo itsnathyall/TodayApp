@@ -6,7 +6,7 @@ dotenv.config();
 
 export const protect = async (req, res, next) => {
   try {
-    console.log("🔐 Checking JWT_SECRET:", process.env.JWT_SECRET);
+    console.log("Checking JWT_SECRET:", process.env.JWT_SECRET);
 
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
@@ -18,7 +18,7 @@ export const protect = async (req, res, next) => {
 
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("✅ Decoded Token:", decoded);
+    console.log("Decoded Token:", decoded);
 
 
     const userId = decoded._id || decoded.id;
