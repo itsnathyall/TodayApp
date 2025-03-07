@@ -55,7 +55,7 @@ export const markTaskAsCompleted = async (req, res) => {
     try{
         const {taskId} = req.params;
         const task = await Tasks.findOneAndUpdate(
-            {_id: taskId, user: mockUserId},
+            {_id: taskId, user: req.user.id},
             {status: "completed", completedAt: new Date()},
             {new: true}
         );
